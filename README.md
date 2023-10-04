@@ -1,11 +1,47 @@
 # BounceHouse
-A bouncy ball MIDI controller art installation
+A bouncy ball MIDI controller art installation designed, fabricated, and programmed for HCI 584 Python Implementation Fall 2023.
+![image](https://github.com/dandegeest/BounceHouse/assets/73483425/ee5f4afd-551b-46ac-a2f8-306eee6b8dd5)
 ![image](https://github.com/dandegeest/BounceHouse/assets/73483425/86ae4651-b598-4382-84b6-660a2462e244)
 
-## 0verview:
-
 An interactive and self-contained art installation using bouncing balls to interact with a custom floor orientated MIDI pad controller consisting of custom fabricated “pads” that will detect ball impact, generate a MIDI note, and send the note to a MIDI compatible sequencer.
+
+## Concept Sketch
 ![image](https://github.com/dandegeest/BounceHouse/assets/73483425/91c6d74d-1e08-4705-a544-f923754ef3e4)
+
+## Background
+
+I recently started a job at Ames Resource Recovery plant and have been collecting a large assortment of bouncy balls (200) from the plant while I perform my duties as a clean-up laborer.  The balls are prevalent in the plant because their diameter is smaller than the primary shredder teeth and after dropping through they bounce or roll out of the various sorting, sifting, secondary shredding machines, and inclined conveyor belts used to turn garbage into refuse derived fuel that is burned in the natural gas boiler at the Ames Power Plant.
+
+![image](https://github.com/dandegeest/BounceHouse/assets/73483425/2562f369-ee3b-4a7f-be43-fd3c80162b73)
+
+I would like to build an installation that contains sensor pads positioned on the ground that will produce a MIDI note when they are hit by a bouncing ball thrown by the user.  The MIDI will be routed to a synthesizer/sequencer that will play a note/fx based on the current settings of the current sequence and MIDI device.  As the ball bounces it can interact with other pads until coming to rest.  I will experiment with different solutions for how the “spent” balls will be returned to the user.
+
+The pads will also be positioned in a room to allow bouncing interaction with at least two walls (ie: in a corner).  The hope is that one throw of a ball will result in several pad interactions as the ball bounces off walls and the floor/pads.  Meanwhile the user is free to continue to bounce more balls and perhaps even multiple users will be allowed.
+
+## Components:
+
+Custom Pads: I will fabricate pads that can be laid out on the ground in various patterns but initially I will just be using a basic grid like current table top MIDI pad controllers. For the purpose of this class I will build one prototype but for the final installation I would like to use 8 or more pads in a dedicated room.
+
+![image](https://github.com/dandegeest/BounceHouse/assets/73483425/ca2a90d4-2250-4907-b02b-e40e369c0430)
+
+PyBoard Controller:  https://micropython.org/ will be used to process the pad inputs and translate to MIDI data that will then be sent to the Novation Tracks sequencer using a normal MIDI cable connection.  
+
+Synthesizer(s): The MIDI input will be connected to a Novation Tracks Groovebox.  This is a device I already own and am experienced using it to create music.  There may be an opportunity to also control this device directly from python over usb from a custom desktop application.
+
+I also have a MicroFreak Synthesizer that could be controlled by MIDI and I will experiment with this varied gear to determine the best output solution. It also has a control app that could possibly be presented to the user to allow real time adjustments to synth engines, etc.
+
+I have a pair of ROKIT-5-G4 monitor speakers for playback that will be integrated into the enclosure.
+
+Programming:
+
+Python and MicroPython will be used to complete the needed interface(s) and hardware programming respectively.  
+
+Python 3 and the various tools we have been learning in class will be used for testing and user applications as needed.
+
+Pad Design:
+A significant part of this project will be building and testing the best solution for the pads.  My initial idea is to build a 1 X 1 frame from basic lumber and then make a face plate from plywood.  On the back of the faceplate I will affix a   I am not sure which thickness will give the best sound response or the best bounce.  I will experiment with various thicknesses like ⅛’’, ⅜’’, ¼’’ and ½’’ sanded plywood.  I want a good combination of resonance (probably best in thinner plywood) but also good bounce for the balls which may be better with thicker plywood.
+
+
 
 
 
