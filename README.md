@@ -20,15 +20,19 @@ The pads will also be positioned in a room to allow bouncing interaction with at
 
 ## Components:
 
-Bounce Pads: I will fabricate custom pads that can be laid out on the ground in various patterns but initially I will just be using a basic grid like current table top MIDI pad controllers. 
+*Bounce Pads:* I will fabricate custom pads that can be laid out on the ground in various patterns but initially I will just be using a basic grid like current table top MIDI pad controllers. 
 ![image](https://github.com/dandegeest/BounceHouse/assets/73483425/ca2a90d4-2250-4907-b02b-e40e369c0430)
 
 For the purpose of this class I will build two prototypes to test which thickness of plywood (1/4'' and 1/2'') gives the best bounce/resoance combination.  I want the balls to not have their bounce significantly impacted by hitting the pad but also want to get a good signal from the knock sensor.
 
+![PXL_20231007_224350869](https://github.com/dandegeest/BounceHouse/assets/73483425/2d103c03-17d4-4e05-9da7-1a8d283265b5)
+![PXL_20231006_213939401](https://github.com/dandegeest/BounceHouse/assets/73483425/e76db093-e991-4efa-96aa-e4832206df87)
+![PXL_20231006_210759816](https://github.com/dandegeest/BounceHouse/assets/73483425/4ee70728-01d4-4032-998f-3f5478f38418)
+![PXL_20231006_210600428](https://github.com/dandegeest/BounceHouse/assets/73483425/8742fafb-20fd-4113-9b3e-a3656b1494f5)
+
 For the final installation I would like to use 8 or more pads arranged in various configurations in a dedicated room or installation space.
 
-
-PyBoard Controller:  https://micropython.org/ will be used to process the pad inputs and translate to MIDI data that will then be sent to the Novation Tracks sequencer using a normal MIDI cable connection.  
+*Controller:*  https://micropython.org/ will be used to process the pad inputs and translate to MIDI data that will then be sent to the Novation Tracks sequencer using a normal MIDI cable connection.  
 
 Synthesizer(s): The MIDI input will be connected to a Novation Tracks Groovebox.  This is a device I already own and am experienced using it to create music.  There may be an opportunity to also control this device directly from python over usb from a custom desktop application.
 
