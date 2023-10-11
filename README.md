@@ -20,9 +20,13 @@ The pads will also be positioned in a room to allow bouncing interaction with at
 
 ## Components:
 
-Custom Pads: I will fabricate pads that can be laid out on the ground in various patterns but initially I will just be using a basic grid like current table top MIDI pad controllers. For the purpose of this class I will build one prototype but for the final installation I would like to use 8 or more pads in a dedicated room.
-
+Bounce Pads: I will fabricate custom pads that can be laid out on the ground in various patterns but initially I will just be using a basic grid like current table top MIDI pad controllers. 
 ![image](https://github.com/dandegeest/BounceHouse/assets/73483425/ca2a90d4-2250-4907-b02b-e40e369c0430)
+
+For the purpose of this class I will build two prototypes to test which thickness of plywood (1/4'' and 1/2'') gives the best bounce/resoance combination.  I want the balls to not have their bounce significantly impacted by hitting the pad but also want to get a good signal from the knock sensor.
+
+For the final installation I would like to use 8 or more pads arranged in various configurations in a dedicated room or installation space.
+
 
 PyBoard Controller:  https://micropython.org/ will be used to process the pad inputs and translate to MIDI data that will then be sent to the Novation Tracks sequencer using a normal MIDI cable connection.  
 
