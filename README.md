@@ -32,19 +32,19 @@ For the purpose of this class I will build two prototypes to test which thicknes
 
 For the final installation I would like to use 8 or more pads arranged in various configurations in a dedicated room or installation space.
 
-*Controller:*  https://micropython.org/ will be used to process the pad inputs and translate to MIDI data that will then be sent to the Novation Tracks sequencer using a normal MIDI cable connection.  
+*Controller:*  [SparkFun Thing Plus - RP2040](https://www.sparkfun.com/products/17745) running https://micropython.org/ will be used to process the pad inputs and translate to MIDI data that will then be sent to the Novation Tracks sequencer using a normal MIDI cable connection.  
 
 *Synthesizer(s):* The MIDI input will be connected to a [Novation Tracks](https://us.novationmusic.com/products/circuit-tracks) Groovebox.  This is a device I already own and am experienced using it to create music.  There may be an opportunity to also control this device directly from python over usb from a custom desktop application.
 
 I also have a [MicroFreak Synthesizer](https://www.arturia.com/products/hardware-synths/microfreak/overview) that could be controlled by MIDI and I will experiment with this varied gear to determine the best output solution. It also has a control app that could possibly be presented to the user to allow real time adjustments to synth engines, etc.
 
-I have a pair of ROKIT-5-G4 monitor speakers for playback that will be integrated into the enclosure.
+*Sound:* ROKIT-5-G4 monitor speakers for playback that will be integrated into the installation.
 
 **Programming:**
 
 Python and MicroPython will be used to complete the needed interface(s) and hardware programming respectively.  
 
-Python 3 and the various tools we have been learning in class will be used for testing and user applications as needed.
+Python 3 and the various tools we have been learning in class will be used for testing and other applications as needed.
 
 
 
