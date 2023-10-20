@@ -1,7 +1,15 @@
-import machine
+from machine import ADC, Pin
 import utime
 
-knock = machine.ADC(26)
+led = Pin(25, Pin.OUT)
+
+knock = ADC(26)
 while True:
-    print(knock.read_u16())
-    utime.sleep(.5)
+
+    knockLvl = knock.read_u16()
+    if (knockLvl > 400):
+        print(f"D: {knockLvl}")
+        led.high()
+    else:
+        led.low()
+    utime.sleep_ms(100)
