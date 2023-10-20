@@ -7,9 +7,9 @@ knock = ADC(26)
 while True:
 
     knockLvl = knock.read_u16()
-    if (knockLvl > 400):
+    if (knockLvl > 1000):
         print(f"D: {knockLvl}")
         led.high()
     else:
         led.low()
-    utime.sleep_ms(100)
+    utime.sleep_ms(10)
