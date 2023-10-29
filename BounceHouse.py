@@ -8,34 +8,71 @@ led = Pin(25, Pin.OUT)
 knock = ADC(26)
 uart = machine.UART(0,31250)
 
-notes = [60, 61,62,63,64,65,66,67,68]
-#notes = [50,51,52,53,54,55,56,57,58]
+#notes = [n for n in range(60, 72)]
+
+#natural minor
+notes = [60, 61, 62, 63, 65, 66, 67, 69]
+lastNote = 0
+lastNoteDelay = 0
 
 def noteOn(note, velocity):
     if note is not None:
         print(f"{'NOn' if velocity > 0 else 'NOff'}:{note} V:{velocity}")
         uart.write(ustruct.pack("bbb",0x90,note,velocity))
-        return note
+        utime.sleep_ms(1)
     
 def noteOff(note):
     if note is not None:
-        #uart.write(ustruct.pack("bbb",0x80,note,0))
-        noteOn(note, 0)
+        #noteOn(note, 0)
+        uart.write(ustruct.pack("bbb",0x80,note,0))
+        print(f"NOff:{note}")        
+        utime.sleep_ms(1)
+
+def debounce_knock_read(threshold, bounce):
+    # it needs to be stable for a continuous 20ms
+    knockLvl = knock.read_u16()
+    if knockLvl > threshold:
+        b = 0
+        while b < bounce:
+            if knock.read_u16() > threshold:
+                #print(f"Bounce:{b}")
+                b += 1
+            else:
+                return knockLvl
+            
+            utime.sleep_ms(1)
     
+    return knockLvl
+        
 def generate_midi_note(klvl):
-    #print(f"D: {klvl}")      
+    global lastNote
+    global lastNoteDelay
+    
+    print(f"D: {klvl}")
+    
     led.high()
-    note = random.choice(notes)
-    lastNote = noteOn(note, random.randint(69,127))
-    utime.sleep_ms(200)
-    noteOff(lastNote)
+    if lastNote > 0:
+        noteOff(lastNote)
+        
+    lastNote = random.choice(notes)
+    lastNote += random.choice([-10, 0])
+    lastNoteDelay = klvl - 1500
+    noteOn(lastNote, random.randint(69,127))
+
     led.low()
    
 while True:
-    knockLvl = knock.read_u16()
+
+    if lastNote > 0:
+        lastNoteDelay -= 1
+        #print(f"{lastNote}:{lastNoteDelay}")
+        if lastNoteDelay <= 0:
+            noteOff(lastNote)
+            lastNote = 0
+        
+    knockLvl = debounce_knock_read(1500, 60)
     if (knockLvl > 1500):
-        generate_midi_note(knockLvl)
-    else:
-        led.low() 
-        utime.sleep_ms(1)
+        generate_midi_note(knockLvl)  
+     
+    utime.sleep_ms(1)
 
