@@ -11,19 +11,25 @@ class Marble extends Dot
   int dirDurMax = (int)frameRate;
   int step = 10;
   StripeOrientaion stripe;
+  int startFrame;
   
   Marble(int x, int y, int d, StripeOrientaion s) {
     super(x, y, d / 2);
     diameter = d;
     stripe = s;
+    startFrame = frameCount;
+  }
+  
+  void update() {
+    super.update();
+    if (diameter > 0 && (frameCount - startFrame) % 2 == 0) {
+      diameter--;
+    }
   }
   
   void display() {
     super.display();
     noFill();
-    //shapeColor = color(random(255), random(255), random(255));
-    //stroke(shapeColor);
-    //noStroke();
     ellipse(position.x, position.y, diameter, diameter);
     
     stripe = position.x % 2 == 0 ? StripeOrientaion.Horizontal : StripeOrientaion.Vertical;

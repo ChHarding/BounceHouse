@@ -1,7 +1,7 @@
 import processing.serial.*;
 
 Serial sPort;
-ArrayList<Float> knocks = new ArrayList<Float>();
+ArrayList<Marble> delays = new ArrayList<Marble>();
 
 int screenX = 1200;
 int screenY = 800;
@@ -21,7 +21,7 @@ Dot mouseDot;
 
 void setup() {
   size(1200, 800);
-  fullScreen();
+  //fullScreen();
 
   hint(ENABLE_STROKE_PURE);
   frameRate(30);
@@ -64,8 +64,14 @@ void draw() {
     dots.get(i).display();
   }
   
-  //if (frameCount % 30 == 0)
-  //  cycle();
+  for (int i = delays.size() - 1; i >= 0; i--) {
+    Marble s = delays.get(i);
+    s.update();
+    s.display();
+    
+    if (s.diameter <= 5)
+      delays.remove(i);
+  }
 }
 
 void initDots() {
@@ -122,33 +128,35 @@ void serialEvent(Serial port) {
     String[] command = inString.split(":");
     switch(command[0]) {
       case "KNOCK":
-        float t = 1000;
-        float k = float(command[1]);
-        //knocks.add(float(command[1]));
-        if (k < t)
-          break;
-        
-        println(k);
-        if (currDot == dots.size())
-          currDot = 0;
-        
-        Dot dot = dots.get(currDot);
-        //dot.control1 = new PVector(map(k, t, 3000, 0, height), dot.control1.y);
-        if (!dot.animating()) {
-          PVector v = PVector.random2D();
-          v.normalize();
-          v.mult(k);
-          dot.bounce(v, 300);
-        }
-
-        dot.dotColor = color(map(k, t, 3000, 0, 255), random(255), blue(dot.dotColor));
-        
-        currDot++;
-        //for (int i = 0; i < dots.size(); i++) {
-        //  Dot dot = dots.get(i);
-        //  dot.control1 = new PVector(map(k, 0, 2800, 0, width), dot.control1.y);
-        //}
+        onKnockCommand(float(command[1]));
         break;
+      case "CC":
+        onControlChange(int(command[1]), int(command[2]), float(command[3]));
     }
   }
+}
+
+void onKnockCommand(float k) {
+  float t = 1000;
+  if (k < t)
+    return;
+  
+  if (currDot == dots.size())
+    currDot = 0;
+  
+  Dot dot = dots.get(currDot);
+  if (!dot.animating()) {
+    PVector v = PVector.random2D();
+    v.normalize();
+    v.mult(k);
+    dot.bounce(v, 300);
+  }
+  
+  dot.dotColor = color(map(k, t, 3000, 0, 255), random(255), blue(dot.dotColor));
+  currDot++;
+}
+
+void onControlChange(int cc, int channel, float value) {
+  if (value > 0)
+    delays.add(new Marble((int)random(width), (int)random(height), (int)value, StripeOrientaion.Horizontal));
 }

@@ -4,7 +4,7 @@ import ustruct
 import random
 
 
-THRESHOLD = 1000
+THRESHOLD = 1200
 MIDI_CHANNEL = 1
 PROJECT_CTL_CHANNEL = 15
 led = Pin(25, Pin.OUT)
