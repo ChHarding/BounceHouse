@@ -109,6 +109,7 @@ void mousePressed() {
 }
 
 void keyPressed() {
+  saveFrame("bounceHouse####.png");
 }
 
 void mouseMoved() {
@@ -148,7 +149,7 @@ void onKnockCommand(float k) {
   if (!dot.animating()) {
     PVector v = PVector.random2D();
     v.normalize();
-    //v.mult(k);
+    v.mult(k-t);
     dot.bounce(v, 300);
   }
   
