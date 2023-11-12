@@ -38,6 +38,10 @@ For the final installation I would like to use 8 or more pads arranged in variou
 ![PXL_20231019_210658576](https://github.com/dandegeest/BounceHouse/assets/73483425/88e446c6-d64b-4aab-95cd-0bb5dbc97130)
 ![PXL_20231019_211426438](https://github.com/dandegeest/BounceHouse/assets/73483425/413cd556-6492-40db-96ff-b00248924164)
 
+*Addition of Midi 5PIN output*
+![PXL_20231112_233003857](https://github.com/dandegeest/BounceHouse/assets/73483425/73090531-a391-4c40-9bf2-5d68d2e89c59)
+Add Midi output connector and updated code to send Midi Note or CC values.
+
 *Synthesizer(s):* The MIDI input will be connected to a [Novation Tracks](https://us.novationmusic.com/products/circuit-tracks) Groovebox.  This is a device I already own and am experienced using it to create music.  There may be an opportunity to also control this device directly from python over usb from a custom desktop application.
 
 I also have a [MicroFreak Synthesizer](https://www.arturia.com/products/hardware-synths/microfreak/overview) that could be controlled by MIDI and I will experiment with this varied gear to determine the best output solution. It also has a control app that could possibly be presented to the user to allow real time adjustments to synth engines, etc.
@@ -49,6 +53,12 @@ I also have a [MicroFreak Synthesizer](https://www.arturia.com/products/hardware
 Python and MicroPython will be used to complete the needed interface(s) and hardware programming respectively.  
 
 Python 3 and the various tools we have been learning in class will be used for testing and other applications as needed.
+
+http://projecessing.org was used to create a simple visualization that can read from the serial port and render graphics in conjuction with the midi output.
+![bounceHouse0255](https://github.com/dandegeest/BounceHouse/assets/73483425/4e987689-446e-4d29-8e59-6040fcbf6169)
+
+
+
 
 
 
