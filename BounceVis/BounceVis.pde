@@ -21,7 +21,7 @@ Dot mouseDot;
 
 void setup() {
   size(1200, 800);
-  //fullScreen();
+  fullScreen();
 
   hint(ENABLE_STROKE_PURE);
   frameRate(30);
@@ -148,7 +148,7 @@ void onKnockCommand(float k) {
   if (!dot.animating()) {
     PVector v = PVector.random2D();
     v.normalize();
-    v.mult(k);
+    //v.mult(k);
     dot.bounce(v, 300);
   }
   
@@ -157,6 +157,9 @@ void onKnockCommand(float k) {
 }
 
 void onControlChange(int cc, int channel, float value) {
-  if (value > 0)
-    delays.add(new Marble((int)random(width), (int)random(height), (int)value, StripeOrientaion.Horizontal));
+  if (value > 0) {
+    Marble m = new Marble((int)random(width), (int)random(height), (int)value * 5, StripeOrientaion.Horizontal);
+    m.bounce(PVector.random2D(), value);
+    delays.add(m);
+  }
 }
