@@ -7,6 +7,7 @@ import random
 THRESHOLD = 1200
 MIDI_CHANNEL = 1
 PROJECT_CTL_CHANNEL = 15
+SYNTH2_DELAY_SEND_LVL = 112
 led = Pin(25, Pin.OUT)
 knock = ADC(26)
 uart = machine.UART(0,31250)
@@ -72,7 +73,7 @@ while True:
     if synthDelay > 0:
         synthDelay-=1;
         if synthDelay == 0:
-            generate_cc_message(112, PROJECT_CTL_CHANNEL, synthDelay)
+            generate_cc_message(SYNTH2_DELAY_SEND_LVL, PROJECT_CTL_CHANNEL, synthDelay)
 
     if lastNote > 0:
         lastNoteDelay -= 1
@@ -84,10 +85,10 @@ while True:
     knockLvl = debounce_knock_read(THRESHOLD, 250)        
     print(f"KNOCK:{knockLvl}")
     
-    if (knockLvl > THRESHOLD):
+    if knockLvl > THRESHOLD:
         if knockLvl > THRESHOLD:
             synthDelay = int((knockLvl - THRESHOLD) % 127)
-            generate_cc_message(112, PROJECT_CTL_CHANNEL, synthDelay)
+            generate_cc_message(SYNTH2_DELAY_SEND_LVL, PROJECT_CTL_CHANNEL, synthDelay)
         
         #nn = int((knockLvl - THRESHOLD) / 100)
         riff = random.choice(naturalMinorRiffs)
