@@ -2,23 +2,41 @@ from machine import ADC, Pin
 import utime
 import ustruct
 import random
+import select
+import sys
 
+# setup poll to read USB port
+poll_object = select.poll()
+poll_object.register(sys.stdin,1)
 
-THRESHOLD = 1200
-MIDI_CHANNEL = 1
-PROJECT_CTL_CHANNEL = 15
-SYNTH2_DELAY_SEND_LVL = 112
+THRESHOLD = 1200 # Ignore sensor values below this value
+MIDI_CHANNEL = 1 # Send notes on this channel
+
+#Novation Circuit Tracks
+DRUM_CTL_CHANNEL = 9 #MIDI channel for drum control (10 in the prg guide)
+PROJECT_CTL_CHANNEL = 15 # MIDI channel for proj control (16 in the prg guide)
+# CCs
+SYNTH1_DELAY_SEND_LVL = 111 #Synth 2 Delay Send
+SYNTH2_DELAY_SEND_LVL = 112 #Synth 2 Delay Send
+SYNTH1_VOLUME_LVL = 12 #Synth 1 Volume
+SYNTH2_VOLUME_LVL = 14 #Synth 2 Volume
+
+#Active CC Values
+CC_CHANNEL = PROJECT_CTL_CHANNEL
+CC_CONTROL_NUM = SYNTH2_DELAY_SEND_LVL
+CC_CONTROL_RANGE = 127 #CC range from 0-N with 127 the MAX value of N
+
+#Hardware
 led = Pin(25, Pin.OUT)
 knock = ADC(26)
 uart = machine.UART(0,31250)
 
-
 #natural minor
-naturalMinorScale = [60, 61, 62, 63, 65, 66, 67, 69]
+naturalMinorScale = [[60], [61], [62], [63], [65], [66], [67], [69]]
 naturalMinorRiffs = [[82, 84], [84, 82], [80, 85], [85, 75, 80]]
 lastNote = 0
 lastNoteDelay = 0
-synthDelay = 0
+ccDelay = 0
 
 def noteOn(note, channel, velocity):
     if note is not None:
@@ -59,7 +77,7 @@ def generate_midi_note(note, channel, klvl):
         
     lastNote = note
     lastNoteDelay = klvl - THRESHOLD
-    noteOn(lastNote, channel, random.randint(69,127))
+    noteOn(lastNote, channel, random.randint(25,127))
 
     led.low()
    
@@ -70,10 +88,26 @@ def generate_cc_message(cc, channel, value):
     led.low()
     
 while True:
-    if synthDelay > 0:
-        synthDelay-=1;
-        if synthDelay == 0:
-            generate_cc_message(SYNTH2_DELAY_SEND_LVL, PROJECT_CTL_CHANNEL, synthDelay)
+    if poll_object.poll(0):
+       #read as character
+       cmd = sys.stdin.readline().replace("\n", "")
+       print(f"EXTCMD:{cmd}")
+       if len(cmd) > 0:
+           cmds = cmd.split(":")
+           if cmds[0] == "CC":
+               if len(cmds) > 3:
+                   #One time CC message
+                   generate_cc_message(int(cmds[1]), int(cmds[2]), int(cmds[3]))
+               else:
+                   #Change active
+                   CC_CONTROL_NUM = int(cmds[1])
+                   CC_CONTROL_RANGE = int(cmds[2])
+                   print(f"CCSET:{CC_CONTROL_NUM}:{CC_CONTROL_RANGE}")
+       
+    if ccDelay > 0:
+        ccDelay-=1;
+        if ccDelay == 0:
+            generate_cc_message(CC_CONTROL_NUM, CC_CHANNEL, 0)
 
     if lastNote > 0:
         lastNoteDelay -= 1
@@ -86,15 +120,14 @@ while True:
     print(f"KNOCK:{knockLvl}")
     
     if knockLvl > THRESHOLD:
-        if knockLvl > THRESHOLD:
-            synthDelay = int((knockLvl - THRESHOLD) % 127)
-            generate_cc_message(SYNTH2_DELAY_SEND_LVL, PROJECT_CTL_CHANNEL, synthDelay)
+        if ccDelay == 0:
+            ccDelay = int((knockLvl - THRESHOLD) % CC_CONTROL_RANGE)
+            generate_cc_message(CC_CONTROL_NUM, CC_CHANNEL, ccDelay)
         
         #nn = int((knockLvl - THRESHOLD) / 100)
-        riff = random.choice(naturalMinorRiffs)
-        nn = len(riff)
-        for n in range(nn):
-            generate_midi_note(riff[n % len(riff)], MIDI_CHANNEL, knockLvl)
-            utime.sleep_ms(random.choice([64]))
+        notes = random.choice(naturalMinorRiffs)
+        for n in range(len(notes)):
+            generate_midi_note(notes[n % len(notes)], MIDI_CHANNEL, knockLvl)
+            utime.sleep_ms(random.choice([128, 250]))
     else:
         utime.sleep_ms(1)
