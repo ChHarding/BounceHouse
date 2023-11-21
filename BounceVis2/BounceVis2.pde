@@ -1,5 +1,9 @@
 import processing.serial.*;
+import garciadelcastillo.dashedlines.*;
 
+String version = "V3";
+DashedLines dash;
+float dashDist = 0;
 Serial sPort;
 float knock = 0;
 String message;
@@ -19,7 +23,7 @@ float factor = 1;
 void setup()
 {
   size(1200, 800);
-  fullScreen();
+  //fullScreen();
   gridX = width / ss;
   gridY = height / ss;
   frameRate(10);
@@ -27,44 +31,31 @@ void setup()
   x = width/2;
   y = height/2;
   
-
+  dash = new DashedLines(this);
+  dash.pattern(30, 10);
+  
   printArray(Serial.list());
   sPort = new Serial(this, Serial.list()[2], 9600);
   background(0);
 }
 
 void draw() {
-  if (knock < 50)
+  if (knock == 0)
     background(0);
-        
-  draw1();
+     
+  if (knock > 0)
+    draw1();
   
-  if (knock > 300)
+  if (knock > 2500)
     draw2();
+  
+  draw3();
   
   if (frameCount % 50 == 0) {
     x = (int)random(0, width);
     y = (int)random(0, height);
     //factor = random(1, 4);
-    saveFrame("frames/image######.png");
-  }
-  
-  if (knock > 100)
-    knock -= 25;
-}
-
-void draw1() {
-  if (knock > 0) {
-    ellipseMode(CORNER);
-    float f = map(knock, 100, 600, 5, 200);
-    stroke(f, abs(255 - f), random(255));
-    fill(f, abs(255 - f), random(255));
-    if (knock % 10 == 0)
-      noStroke();
-    else
-      noFill();
-    //rect(currS * ss, currY, ss, ss);
-    ellipse(currS * ss, currY, f, f);
+    saveFrame("frames/image" + version + "######.png");
   }
   
   currS++;
@@ -74,13 +65,28 @@ void draw1() {
   }
   
   if (currY > height) currY = 0;
+
+  if (knock > 100)
+    knock -= 25;
 }
 
+void draw1() {
+  ellipseMode(CORNER);
+  float f = map(knock, 0, 2000, 0, 200);
+  stroke(f, abs(255 - f), random(255));
+  fill(f, abs(255 - f), random(255));
+  if (knock % 10 == 0)
+    noStroke();
+  else
+    noFill();
+  //rect(currS * ss, currY, ss, ss);
+  ellipse(currS * ss, currY, f, f);
+}
 
 void draw2() {  
   ellipseMode(CENTER);
   rectMode(CENTER);
-  float f = map(knock, 100, 600, 0, 255) * factor;
+  float f = map(knock, 0, 5000, 0, 255) * factor;
   //float s = map(angleY, 0, 1000, 20, 0);
   noFill();
   strokeWeight(5 * factor);
@@ -88,11 +94,27 @@ void draw2() {
   
   if (knock % 10 == 0)
   {
-    fill(f, abs(255 - f), random(255));
-    rect(x, y, floor(knock) * factor, floor(knock) * factor, f);
+    //fill(f, abs(255 - f), random(255));
+    rect(x, y, floor(knock - 2500) * factor, floor(knock - 2500) * factor, f);
   }
   else
-    ellipse(x, y, floor(knock) * factor, floor(knock) * factor);
+    ellipse(x, y, floor(knock - 2500) * factor, floor(knock - 2500) * factor);
+}
+
+void draw3() {
+   noFill();
+   strokeCap(ROUND);
+   strokeWeight(random(3));
+   //dash.line(currS * ss, currY, mouseX, mouseY);
+   if (knock > 2500) {    
+     //background(#FF9001);
+     dash.bezier(0, height, mouseX, mouseY, currS * ss, currY, width, 0);
+   }
+   else
+     dash.bezier(0, 0, mouseX, mouseY, currS * ss, currY, width, height);
+   
+   dash.offset(dashDist);
+   dashDist += 1;
 }
 
 void mousePressed() {
@@ -136,7 +158,7 @@ void serialEvent(Serial port) {
 
 void onKnockCommand(float k) {
   println("KNOCK:", k);
-  knock = k;
+  knock = k; //map(k, 0, 65536, 0, 5000);
 }
 
 void onControlChange(int cc, int channel, float value) {

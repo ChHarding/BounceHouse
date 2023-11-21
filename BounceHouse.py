@@ -9,7 +9,7 @@ import sys
 poll_object = select.poll()
 poll_object.register(sys.stdin,1)
 
-THRESHOLD = 1500 # Ignore sensor values below this value
+THRESHOLD = 2500 # Ignore sensor values below this value
 MIDI_CHANNEL = 1 # Send notes on this channel
 
 #Novation Circuit Tracks
