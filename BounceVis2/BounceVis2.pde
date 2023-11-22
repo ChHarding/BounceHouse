@@ -1,7 +1,11 @@
 import processing.serial.*;
 import garciadelcastillo.dashedlines.*;
 
-String version = "V3";
+String[] columns = {"Timestamp", "Command"}; // Modify this array to match your data
+String filename = "data/data.csv"; // Name of the CSV file to save
+DataManager data;
+String version = "V4";
+
 DashedLines dash;
 float dashDist = 0;
 Serial sPort;
@@ -19,6 +23,8 @@ int y;
 int ss = 50;
 
 float factor = 1;
+float delay = 0;
+int octave = 0;
 
 void setup()
 {
@@ -26,7 +32,7 @@ void setup()
   //fullScreen();
   gridX = width / ss;
   gridY = height / ss;
-  frameRate(10);
+  frameRate(30);
   
   x = width/2;
   y = height/2;
@@ -34,27 +40,51 @@ void setup()
   dash = new DashedLines(this);
   dash.pattern(30, 10);
   
+  data = new DataManager();
+  data.createCsvFile(columns);
+
   printArray(Serial.list());
-  sPort = new Serial(this, Serial.list()[2], 9600);
+  int comPort = -1;
+  String[] ports = Serial.list();
+  for (int i = 0; i < ports.length; i++) {
+    if (ports[i].equals("COM6")) {
+      comPort = i;
+      break; // If found, exit the loop
+    }
+  }
+  
+  if (comPort > 0) {
+    println("OPENPORT:", Serial.list()[comPort]);
+    sPort = new Serial(this, Serial.list()[comPort], 9600);
+  }
+  
   background(0);
 }
 
+void exit() {
+  data.saveFile(filename);
+  sPort.stop();
+  sPort.dispose();
+}
+
 void draw() {
-  if (knock == 0)
+  if (knock < 50)
     background(0);
      
   if (knock > 0)
     draw1();
   
-  if (knock > 2500)
+  if (knock > 1000)
     draw2();
   
-  draw3();
+  if (delay > 5)
+    draw3();
   
-  if (frameCount % 50 == 0) {
+  if (frameCount % 300 == 0) {
     x = (int)random(0, width);
     y = (int)random(0, height);
     //factor = random(1, 4);
+    print("Saving");
     saveFrame("frames/image" + version + "######.png");
   }
   
@@ -64,54 +94,61 @@ void draw() {
     currY += ss;
   }
   
-  if (currY > height) currY = 0;
+  if (currY > height) {
+    currY = 0;
+    background(0);
+  }
 
   if (knock > 100)
     knock -= 25;
 }
 
 void draw1() {
-  ellipseMode(CORNER);
-  float f = map(knock, 0, 2000, 0, 200);
+  ellipseMode(CENTER);
+  float f = map(knock, 0, 5000, 0, 255);
   stroke(f, abs(255 - f), random(255));
   fill(f, abs(255 - f), random(255));
-  if (knock % 10 == 0)
-    noStroke();
-  else
+  if (knock > 1000)
+  {
     noFill();
-  //rect(currS * ss, currY, ss, ss);
-  ellipse(currS * ss, currY, f, f);
+    rect(currS * ss, currY, f, f);
+  }
+  else
+    ellipse(currS * ss, currY, f, f);
 }
 
 void draw2() {  
   ellipseMode(CENTER);
   rectMode(CENTER);
-  float f = map(knock, 0, 5000, 0, 255) * factor;
+  float c = map(knock, 0, 5000, 0, 255) * factor;
+  float s = map(knock, 0, 5000, 0, 500);
   //float s = map(angleY, 0, 1000, 20, 0);
   noFill();
-  strokeWeight(5 * factor);
-  stroke(f, abs(255 - f), random(255));
+  strokeWeight(1 * factor);
+  stroke(c, abs(255 - c), random(255));
   
-  if (knock % 10 == 0)
+  if (knock % 2 == 0)
   {
     //fill(f, abs(255 - f), random(255));
-    rect(x, y, floor(knock - 2500) * factor, floor(knock - 2500) * factor, f);
+    rect(x, y, s, s, c);
   }
   else
-    ellipse(x, y, floor(knock - 2500) * factor, floor(knock - 2500) * factor);
+    ellipse(x, y, s, s/2);
 }
 
 void draw3() {
    noFill();
-   strokeCap(ROUND);
-   strokeWeight(random(3));
+   stroke(delay, 255-delay, 255 % delay);
+   strokeCap(SQUARE);
+   dash.pattern(delay, 10);
+   strokeWeight(1);
    //dash.line(currS * ss, currY, mouseX, mouseY);
-   if (knock > 2500) {    
+   if (knock > 1500) {    
      //background(#FF9001);
-     dash.bezier(0, height, mouseX, mouseY, currS * ss, currY, width, 0);
+     dash.bezier(0, 0, random(width), random(height), currS * ss, currY, width, 0);
    }
    else
-     dash.bezier(0, 0, mouseX, mouseY, currS * ss, currY, width, height);
+     dash.bezier(0, height, random(width), random(height), currS * ss, currY, width, height);
    
    dash.offset(dashDist);
    dashDist += 1;
@@ -123,6 +160,22 @@ void mousePressed() {
     sPort.write("CC:" + "111:15:" + r + "\n");
   }
   else if (mouseButton == RIGHT) { 
+  }
+}
+
+void keyPressed() {
+  if (keyCode == LEFT) {
+    octave += 10;
+    sPort.write("OCTAVE:" + octave + "\n");
+  }
+  
+  if (keyCode == RIGHT) {
+    octave -= 10;
+    sPort.write("OCTAVE:" + octave + "\n");
+  }
+  
+  if (keyCode == ENTER) {
+    saveFrame("screens\\photoTile####.png");
   }
 }
 
@@ -140,6 +193,12 @@ void serialEvent(Serial port) {
   if (inString != null) {
     //Trim
     inString = inString.trim();
+    //Record it
+    String[] values = new String[2];
+    values[0] = Long.toString(System.currentTimeMillis());
+    values[1] = inString;
+    data.addRow(values);
+    // Process the command
     String[] command = inString.split(":");
     switch(command[0]) {
       case "KNOCK":
@@ -164,6 +223,7 @@ void onKnockCommand(float k) {
 void onControlChange(int cc, int channel, float value) {
   if (value > 0) {
     if (cc == 111) {
+      delay = value;
     }
   }
 }

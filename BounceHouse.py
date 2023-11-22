@@ -33,7 +33,8 @@ uart = machine.UART(0,31250)
 
 #natural minor
 naturalMinorScale = [[60], [61], [62], [63], [65], [66], [67], [69]]
-naturalMinorRiffs = [[82, 84], [84, 82], [80, 85], [85, 75, 80]]
+naturalMinorRiffs = [[62, 64], [64, 62], [60, 65], [65, 55, 70]]
+OCTAVE = 10
 lastNote = 0
 lastNoteDelay = 0
 ccDelay = 0
@@ -94,6 +95,8 @@ while True:
        print(f"EXTCMD:{cmd}")
        if len(cmd) > 0:
            cmds = cmd.split(":")
+           if cmds[0] == "OCTAVE":
+               OCTAVE = int(cmds[1])
            if cmds[0] == "CC":
                if len(cmds) > 3:
                    #One time CC message
@@ -116,8 +119,9 @@ while True:
             noteOff(lastNote, MIDI_CHANNEL)
             lastNote = 0
             
-    knockLvl = debounce_knock_read(THRESHOLD, 250)        
-    print(f"KNOCK:{knockLvl}")
+    knockLvl = debounce_knock_read(THRESHOLD, 250)
+    if knockLvl > 0:
+        print(f"KNOCK:{knockLvl}")
     
     if knockLvl > THRESHOLD:
         if ccDelay == 0:
@@ -127,7 +131,7 @@ while True:
         #nn = int((knockLvl - THRESHOLD) / 100)
         notes = random.choice(naturalMinorRiffs)
         for n in range(len(notes)):
-            generate_midi_note(notes[n % len(notes)], MIDI_CHANNEL, knockLvl)
+            generate_midi_note(notes[n] + OCTAVE, MIDI_CHANNEL, knockLvl)
             utime.sleep_ms(random.choice([128, 250]))
     else:
         utime.sleep_ms(1)
