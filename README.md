@@ -54,8 +54,11 @@ Python and MicroPython will be used to complete the needed interface(s) and hard
 
 Python 3 and the various tools we have been learning in class will be used for testing and other applications as needed.
 
-http://projecessing.org was used to create a simple visualization that can read from the serial port and render graphics in conjuction with the midi output.
+http://projecessing.org was used to create simple visualizations that can read and write on the serial port to control values on the board and render graphics in conjuction with the midi output.
 ![bounceHouse0255](https://github.com/dandegeest/BounceHouse/assets/73483425/4e987689-446e-4d29-8e59-6040fcbf6169)
+
+![imageV4002100](https://github.com/dandegeest/BounceHouse/assets/73483425/9e8b76c5-24f1-46db-8a41-d98663cc307a)
+
 
 
 
