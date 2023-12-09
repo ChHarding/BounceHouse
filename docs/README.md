@@ -3,12 +3,16 @@ BounceHouse is a MIDI controller that sends MIDI notes to the connected MIDI dev
 
 # Hardware
 SparkFun Thing Plus - RP2040 but any MicroPython MC should work - https://www.sparkfun.com/products/17745
+
 MIDI Connector - Female Right Angle - https://www.sparkfun.com/products/9536
+
 Piezo Sensor - https://www.sparkfun.com/products/10293
+
 Breadboard, Jumper wires, etc.
 
 # Piezo
 A simple connection to the ADC - https://docs.arduino.cc/built-in-examples/sensors/Knock
+![image](https://github.com/dandegeest/BounceHouse/blob/main/docs/knock-circuit.png)
 
 
 
