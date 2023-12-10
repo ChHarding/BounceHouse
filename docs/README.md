@@ -18,7 +18,7 @@ A piezo connection to the ADC - https://docs.arduino.cc/built-in-examples/sensor
 # MIDI Circuit
 Standard 5 Pin connectors - https://diyelectromusic.wordpress.com/2021/01/23/midi-micropython-and-the-raspberry-pi-pico/
 
-Pay attention to the section *A side note on voltage and current…* and which resistors to use unless your board is 5V.
+The RP2040 is 3.3V. Pay attention to the section *A side note on voltage and current…* and which resistors to use unless your board is 5V.
 
 ![image](https://github.com/dandegeest/BounceHouse/blob/main/docs/midi-circuit.png)
 
