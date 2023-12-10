@@ -32,7 +32,7 @@ Connect a 5 pin MIDI cable from the 5PIN connector on the board to your MIDI dev
 I found that the sensor values vary depending on where and how I was applying the piezo sensor to a surface.  If you want to adjust how many messages you get or need to adjust the baseline value you can adjust the value of `THRESHOLD = 2500`
 
 # Visualizations
-I included 2 visualizations written in [Processing](http://processing.org).  These demonstrate how to read the knock, MIDI, and CC values from the USB serial connection to the RP2040. They also demonstrate how to send a CC command to the board which is then transmitted to the MIDI device.  They are also decent examples of how do do graphics programming in Processing.
+I included 2 visualizations written in [Processing](http://processing.org).  These demonstrate how to read the knock, MIDI, and CC values from the USB serial connection to the RP2040. They also demonstrate how to send a CC command to the board which is then transmitted to the MIDI device.  They are also decent examples of how to do graphics programming in Processing.
 
 # That's the basics, now just throw some balls and get knocking!
 
