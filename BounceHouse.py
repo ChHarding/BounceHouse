@@ -137,9 +137,9 @@ def generate_cc_message(cc, channel, value):
     specific parameters
     
     Parameters:
-    note (int): The midi note to turn off
-    channel (int): The channel to turn the note off
-    kvlv (int): the current bounce value read from sensor
+    cc (int): The CC number to change - device specific
+    channel (int): The channel to send the CC message
+    value (int): the value to set, depends on the CC but often 0-127
 
     Returns:
     None
